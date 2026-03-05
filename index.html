@@ -20,6 +20,73 @@ body {
     color: white;
 }
 
+/* Lightbox for images */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(255,105,180,0.5);
+}
+
+/* Lightbox close button */
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    font-size: 3rem;
+    color: white;
+    cursor: pointer;
+    z-index: 1001;
+    text-shadow: 0 0 20px rgba(255,105,180,0.8);
+    transition: transform 0.3s;
+}
+
+.lightbox-close:hover {
+    transform: scale(1.2);
+    color: #ff69b4;
+}
+
+/* Pause button */
+.pause-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(255,105,180,0.4);
+}
+
+.pause-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255,105,180,0.6);
+}
+
+.pause-btn.paused {
+    background: linear-gradient(135deg, #666, #999);
+}
+
 /* ===== PAGE CONTAINER ===== */
 .page {
     position: fixed;
@@ -154,7 +221,7 @@ body {
     border: 1px solid rgba(255,105,180,0.3);
     border-radius: 15px;
     padding: 15px 10px;
-    width: 80px; /* Changed from 100px */
+    width: 80px;
     box-shadow: 0 0 20px rgba(255,105,180,0.2);
 }
 
@@ -427,6 +494,7 @@ body {
     z-index: 10;
     max-height: 50vh;
     overflow-y: auto;
+    scroll-behavior: smooth;
 }
 
 .letter-text {
@@ -565,6 +633,12 @@ body {
     <source src="music.mpeg" type="audio/mpeg">
 </audio>
 
+<!-- Lightbox for enlarged images -->
+<div class="lightbox" id="lightbox">
+    <span class="lightbox-close" onclick="closeLightbox()">×</span>
+    <img src="" alt="Enlarged" id="lightboxImg">
+</div>
+
 <!-- PAGE 1: WELCOME -->
 <div class="page active" id="page1">
     <div class="stars-bg" id="page1Stars"></div>
@@ -592,7 +666,7 @@ body {
 </div>
         
         <button class="unlock-btn" id="unlockBtn" onclick="goToPage(3)">
-            Enter the Gallery ⭐
+            Wanna See Sth?? ⭐
         </button>
     </div>
     
@@ -644,12 +718,12 @@ body {
     <div class="stars-bg" id="page4Stars"></div>
     <div class="voice-section">
         <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎙️</button>
-        <div class="voice-label">Play my voice while you read</div>
+        <div class="voice-label">Hear my voice & read my letter</div>
         <div class="waveform" id="waveform"></div>
     </div>
     
     <div class="letter-container">
-        <div class="letter-text" id="letterText"></div>
+        <div class="letter-text" id="letterText" style="text-align: center; color: #ffb6c1; font-style: italic;">Click the microphone above to begin... 💌</div>
     </div>
     
     <button class="next-btn" onclick="goToPage(5)" style="margin-top: 30px;">The Finale ✨</button>
@@ -683,6 +757,9 @@ let letterTyped = false;
 let voicePlaying = false;
 let musicStarted = false;
 let countdownInterval = null;
+let musicPaused = false;
+let letterStarted = false;
+let typingTimeout;
 
 // Create stars for all pages
 function createStars(containerId, count = 150) {
@@ -719,7 +796,6 @@ for(let i = 0; i < 25; i++) {
 
 // Start journey with music
 function startJourney() {
-    // Start music on user click (browser requirement)
     const music = document.getElementById('bgMusic');
     music.volume = 0.7;
     music.play().then(() => {
@@ -739,18 +815,16 @@ function goToPage(pageNum) {
     document.getElementById('page' + pageNum).classList.add('active');
     currentPage = pageNum;
     
-    // Initialize page
     if(pageNum === 2) initCosmos();
     if(pageNum === 3) initGallery();
     if(pageNum === 4) initLetter();
     if(pageNum === 5) initFinale();
 }
 
-// PAGE 2: COSMOS - FIXED COUNTDOWN
+// PAGE 2: COSMOS
 function initCosmos() {
     createStars('page2Stars', 150);
     
-    // Hidden stars
     const positions = [
         {top: '15%', left: '10%'},
         {top: '70%', left: '85%'},
@@ -759,7 +833,6 @@ function initCosmos() {
         {top: '45%', left: '50%'}
     ];
     
-    // Remove old hidden stars
     document.querySelectorAll('.hidden-star').forEach(s => s.remove());
     
     positions.forEach((pos, idx) => {
@@ -772,18 +845,15 @@ function initCosmos() {
         document.getElementById('page2').appendChild(star);
     });
     
-    // Clear any existing interval
     if(countdownInterval) clearInterval(countdownInterval);
     
-    // Start countdown immediately and update every second
     updateCountdown();
-countdownInterval = setInterval(updateCountdown, 1000);}
+    countdownInterval = setInterval(updateCountdown, 1000);
+}
+
 function updateCountdown() {
     const now = new Date();
-
-    // Target: May 3, 2026 at 00:00 in local time
-    const targetDate = new Date(2026, 4, 3, 0, 0, 0); 
-    // (Month is 0-indexed: 4 = May)
+    const targetDate = new Date(2026, 4, 3, 0, 0, 0);
 
     if (now >= targetDate) {
         document.getElementById('months').innerText = "0";
@@ -795,11 +865,9 @@ function updateCountdown() {
         return;
     }
 
-    // Clone date to calculate months properly
     let tempDate = new Date(now);
     let months = 0;
 
-    // Count exact calendar months
     while (true) {
         let nextMonth = new Date(tempDate);
         nextMonth.setMonth(nextMonth.getMonth() + 1);
@@ -812,20 +880,15 @@ function updateCountdown() {
         }
     }
 
-    // Remaining difference after months removed
     let diff = targetDate - tempDate;
 
     const totalSeconds = Math.floor(diff / 1000);
     const seconds = totalSeconds % 60;
-
     const totalMinutes = Math.floor(totalSeconds / 60);
     const minutes = totalMinutes % 60;
-
     const totalHours = Math.floor(totalMinutes / 60);
     const hours = totalHours % 24;
-
     const totalDays = Math.floor(totalHours / 24);
-
     const weeks = Math.floor(totalDays / 7);
     const days = totalDays % 7;
 
@@ -836,6 +899,7 @@ function updateCountdown() {
     document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
     document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
 }
+
 function findStar(num) {
     if(starsFound[num-1]) return;
     starsFound[num-1] = true;
@@ -874,20 +938,67 @@ function initGallery() {
         polaroid.className = 'polaroid';
         polaroid.style.setProperty('--rotation', (Math.random() * 10 - 5) + 'deg');
         polaroid.innerHTML = `
-            <img src="image${i}.jpeg" alt="Memory ${i}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <div style="display:none; height:120px; background:linear-gradient(135deg, #ff69b4, #ff1493); color:white; align-items:center; justify-content:center; font-family:Great Vibes; font-size:1.5rem;">${i}</div>
+            <img src="image${i}.jpeg" alt="Memory ${i}" onclick="event.stopPropagation(); openLightbox('image${i}.jpeg')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+            <div style="display:none; height:120px; background:linear-gradient(135deg, #ff69b4, #ff1493); color:white; align-items:center; justify-content:center; font-family:Great Vibes; font-size:1.5rem; cursor:pointer;" onclick="event.stopPropagation(); openLightbox('image${i}.jpeg')">${i}</div>
             <div class="caption">${captions[i-1]}</div>
         `;
         grid.appendChild(polaroid);
     }
 }
 
-// PAGE 4: LETTER
+function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+}
+
+// PAGE 4: LETTER - STARTS WHEN VOICE BUTTON IS CLICKED
 function initLetter() {
     createStars('page4Stars', 100);
     
-    if(letterTyped) return;
+    // Reset letter state when coming to page
+    letterStarted = false;
+    letterTyped = false;
+    document.getElementById('letterText').innerHTML = '<div style="text-align: center; color: #ffb6c1; font-style: italic;">Click the microphone above to begin... 💌</div>';
+    
+    // Remove old elements if they exist
+    const oldInstruction = document.getElementById('voiceInstruction');
+    const oldPauseBtn = document.getElementById('pauseBtn');
+    if(oldInstruction) oldInstruction.remove();
+    if(oldPauseBtn) oldPauseBtn.remove();
+    
+    const voiceSection = document.querySelector('.voice-section');
+    
+    // Add instruction text
+    const instruction = document.createElement('div');
+    instruction.id = 'voiceInstruction';
+    instruction.style.color = '#ffb6c1';
+    instruction.style.marginTop = '15px';
+    instruction.style.fontSize = '1.1rem';
+    instruction.innerText = '👆 Click the microphone to hear my voice and read my letter';
+    voiceSection.appendChild(instruction);
+    
+    // Add pause button (hidden initially)
+    const pauseBtn = document.createElement('button');
+    pauseBtn.id = 'pauseBtn';
+    pauseBtn.className = 'pause-btn';
+    pauseBtn.style.display = 'none';
+    pauseBtn.innerText = '⏸️ Pause Music';
+    pauseBtn.onclick = toggleMusicPause;
+    voiceSection.appendChild(pauseBtn);
+}
+
+function startLetterTyping() {
+    if(letterStarted) return;
+    letterStarted = true;
     letterTyped = true;
+    
+    // Hide instruction, show pause button
+    document.getElementById('voiceInstruction').style.display = 'none';
+    document.getElementById('pauseBtn').style.display = 'inline-block';
     
     const letter = `Hey Shee 💕🌹,
 
@@ -954,13 +1065,15 @@ Yours,
 Edwin 💙`;
     
     const container = document.getElementById('letterText');
+    const letterContainer = document.querySelector('.letter-container');
     let i = 0;
     
     function type() {
         if(i < letter.length) {
             container.innerHTML = letter.substring(0, i+1) + '<span style="display:inline-block;width:2px;height:1.2em;background:#ff69b4;animation:blink 0.8s infinite;vertical-align:middle;"></span>';
             i++;
-            setTimeout(type, 20);
+            letterContainer.scrollTop = letterContainer.scrollHeight;
+            typingTimeout = setTimeout(type, 120);
         } else {
             container.innerHTML = letter;
         }
@@ -977,9 +1090,33 @@ function toggleVoice() {
     waveform.classList.toggle('active');
     
     if(voicePlaying) {
+        // Start letter typing when voice starts
+        startLetterTyping();
+        
         // Add your voice file here
         // const audio = new Audio('voice.mp3');
         // audio.play();
+    } else {
+        // Stop voice if needed
+        // const audio = ... 
+        // audio.pause();
+    }
+}
+
+function toggleMusicPause() {
+    const btn = document.getElementById('pauseBtn');
+    const music = document.getElementById('bgMusic');
+    
+    musicPaused = !musicPaused;
+    
+    if(musicPaused) {
+        btn.innerText = '▶️ Play Music';
+        btn.classList.add('paused');
+        music.pause();
+    } else {
+        btn.innerText = '⏸️ Pause Music';
+        btn.classList.remove('paused');
+        music.play();
     }
 }
 
@@ -1059,7 +1196,6 @@ function initFinale() {
     }
     animate();
     
-    // Catch game
     const game = document.getElementById('catchGame');
     
     function spawnStar() {
@@ -1100,6 +1236,5 @@ window.addEventListener('resize', () => {
     }
 });
 </script>
-
 </body>
 </html>
