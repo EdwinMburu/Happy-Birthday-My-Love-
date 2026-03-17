@@ -382,7 +382,7 @@ html, body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
     z-index: 10;
     padding: 0 10px;
@@ -396,7 +396,7 @@ html, body {
 
 @media (min-width: 1024px) {
     .gallery-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
     }
 }
 
@@ -405,14 +405,47 @@ html, body {
     padding: 8px 8px 25px 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     transform: rotate(var(--rotation));
-    transition: all 0.3s;
+    transition: all 0.6s;
     cursor: pointer;
+    position: relative;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.polaroid.flipped {
+    transform: rotateY(180deg);
 }
 
 .polaroid:hover {
-    transform: rotate(0deg) scale(1.05);
     z-index: 100;
     box-shadow: 0 10px 30px rgba(255,105,180,0.5);
+}
+
+.polaroid-front, .polaroid-back {
+    backface-visibility: hidden;
+    width: 100%;
+}
+
+.polaroid-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+}
+
+.polaroid-back p {
+    color: white;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    line-height: 1.4;
 }
 
 .polaroid img {
@@ -631,7 +664,7 @@ html, body {
     border: 3px solid #ff69b4;
     box-shadow: 0 0 100px rgba(255,105,180,0.6);
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
 }
@@ -669,6 +702,99 @@ html, body {
     line-height: 1.5;
 }
 
+.prayer-reveal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    text-align: center;
+    z-index: 200;
+    background: rgba(0,0,0,0.98);
+    padding: 30px 20px;
+    border-radius: 20px;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 100px rgba(255,215,0,0.6);
+    width: 95%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.prayer-reveal.show {
+    animation: prayerIn 1s forwards;
+}
+
+@keyframes prayerIn {
+    to { transform: translate(-50%, -50%) scale(1); }
+}
+
+.prayer-reveal h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: #ffd700;
+    margin-bottom: 20px;
+    text-shadow: 0 0 30px rgba(255,215,0,0.5);
+}
+
+.prayer-reveal .prayer-content {
+    text-align: left;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 0 10px;
+}
+
+.prayer-reveal .prayer-item {
+    background: rgba(255,215,0,0.1);
+    border-left: 3px solid #ffd700;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 0 10px 10px 0;
+}
+
+.prayer-reveal .prayer-item h3 {
+    color: #ffd700;
+    font-size: clamp(1rem, 4vw, 1.3rem);
+    margin-bottom: 8px;
+    font-family: 'Great Vibes', cursive;
+}
+
+.prayer-reveal .prayer-item p {
+    color: #f0f0f0;
+    font-size: clamp(0.85rem, 3.5vw, 1rem);
+    line-height: 1.5;
+}
+
+.prayer-reveal .final-blessing {
+    margin-top: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255,105,180,0.2), rgba(255,215,0,0.2));
+    border-radius: 15px;
+    border: 2px solid #ff69b4;
+}
+
+.prayer-reveal .final-blessing p {
+    color: #ffb6c1;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    font-style: italic;
+}
+
+.prayer-reveal button {
+    margin-top: 20px;
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #ffd700, #ff69b4);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.prayer-reveal button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255,215,0,0.6);
+}
+
 /* ===== UTILITIES ===== */
 @keyframes glow {
     from { text-shadow: 0 0 20px rgba(255,105,180,0.5); }
@@ -702,25 +828,26 @@ html, body {
     .page {
         padding: 10px;
     }
-    
+
     #page3, #page4 {
         padding-bottom: 80px;
     }
-    
+
     .gallery-grid {
         gap: 10px;
     }
-    
+
     .polaroid {
         padding: 5px 5px 20px 5px;
     }
-    
+
     .letter-container {
         padding: 15px;
         max-height: 55vh;
     }
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -748,10 +875,10 @@ html, body {
 <!-- PAGE 2: COSMOS -->
 <div class="page" id="page2">
     <div class="stars-bg" id="page2Stars"></div>
-    
+
     <div class="cosmos-content">
         <h1>Happy 21st Birthday</h1>
-        <p class="hint-text">Find the 5 hidden stars to unlock your surprise</p>
+        <p class="hint-text">Find the 21 hidden stars to unlock blessings & prayers for you</p>
         <div id="countdownContainer">
     <div class="timeBox"><h2 id="months">--</h2><p>Months</p></div>
     <div class="timeBox"><h2 id="weeks">--</h2><p>Weeks</p></div>
@@ -760,40 +887,16 @@ html, body {
     <div class="timeBox"><h2 id="minutes">--</h2><p>Minutes</p></div>
     <div class="timeBox"><h2 id="seconds">--</h2><p>Seconds</p></div>
 </div>
-        
+
         <button class="unlock-btn" id="unlockBtn" onclick="goToPage(3)">
             Wanna See Sth?? ⭐
         </button>
     </div>
-    
-    <div class="progress" id="progress">Stars found: 0/5</div>
-    
-    <!-- Star Popups -->
-    <div class="star-reason" id="reason1">
-        <h3>💜 You Love God</h3>
-        <p>Your faith shines through everything you do, and it makes me fall for you more every single day.</p>
-        <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
-    </div>
-    <div class="star-reason" id="reason2">
-        <h3>🤝 You're Loyal & Kind</h3>
-        <p>In a world full of fake, you're my real. My person. My always.</p>
-        <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
-    </div>
-    <div class="star-reason" id="reason3">
-        <h3>☀️ Your Smile</h3>
-        <p>One look from you and the world stops. You're my sunshine in human form.</p>
-        <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
-    </div>
-    <div class="star-reason" id="reason4">
-        <h3>🏠 Your Heart</h3>
-        <p>You feel deeply, love harder, and make my heart feel at home.</p>
-        <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
-    </div>
-    <div class="star-reason" id="reason5">
-        <h3>🔐 You Choose Me</h3>
-        <p>You make me feel safe and valued. I'll spend forever proving you right.</p>
-        <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
-    </div>
+
+    <div class="progress" id="progress">Stars found: 0/21</div>
+
+    <!-- 21 Star Prayer Popups - Generated by JS -->
+    <div id="starPrayersContainer"></div>
 </div>
 
 <!-- PAGE 3: GALLERY -->
@@ -801,11 +904,11 @@ html, body {
     <div class="stars-bg" id="page3Stars"></div>
     <div class="gallery-header">
         <h1>Our Memories</h1>
-        <p style="color: #ffb6c1;">20 moments, infinite love</p>
+        <p style="color: #ffb6c1;">30 moments, infinite love - Click to reveal my message</p>
     </div>
-    
+
     <div class="gallery-grid" id="galleryGrid"></div>
-    
+
     <button class="next-btn" onclick="goToPage(4)">Read My Letter 💌</button>
 </div>
 
@@ -817,11 +920,11 @@ html, body {
         <div class="voice-label">Hear my voice & read my letter</div>
         <div class="waveform" id="waveform"></div>
     </div>
-    
+
     <div class="letter-container">
         <div class="letter-text" id="letterText" style="text-align: center; color: #ffb6c1; font-style: italic;">Click the microphone above to begin... 💌</div>
     </div>
-    
+
     <button class="next-btn" onclick="goToPage(5)" style="margin-top: 20px;">The Finale ✨</button>
 </div>
 
@@ -830,24 +933,35 @@ html, body {
     <canvas id="fireworksCanvas"></canvas>
     <div class="catch-game" id="catchGame"></div>
     <div class="score-board" id="scoreBoard">Catch 21 stars: 0/21</div>
-    
+
     <div class="proposal-reveal" id="proposalReveal">
         <h1>Forever Starts Now</h1>
         <div class="ring">💍</div>
         <p>
             Shee, this is forever.<br>
             And forever starts with a question<br>
-            I'll ask you under real stars.<br><br>
-            <span style="font-size: clamp(1.2rem, 5vw, 1.8rem); color: #ff69b4;">See you soon, my love.</span><br>
+            I'll ask (I Mean i was gonna ask untill you finally made a choice 😂😂)you under real stars.<br><br>
+            <span style="font-size: clamp(1.2rem, 5vw, 1.8rem); color: #ff69b4;">See you soon, Shee.</span><br>
             <span style="font-size: clamp(0.9rem, 3.5vw, 1.1rem); opacity: 0.8;">— Edwin 💙</span>
         </p>
+        <button onclick="showPrayerReveal()" style="margin-top: 20px; padding: 12px 30px; background: linear-gradient(135deg, #ffd700, #ff69b4); border: none; border-radius: 50px; color: white; font-size: 1rem; cursor: pointer;">View All Your Blessings 🙏</button>
+    </div>
+
+    <!-- Prayer Reveal Modal -->
+    <div class="prayer-reveal" id="prayerReveal">
+        <h1>🙏 21 Blessings & Prayers For You 🙏</h1>
+        <div class="prayer-content" id="prayerContent"></div>
+        <div class="final-blessing">
+            <p>"May the Lord bless you and keep you; the Lord make His face shine on you and be gracious to you; the Lord turn His face toward you and give you peace."<br>— Numbers 6:24-26</p>
+        </div>
+        <button onclick="closePrayerReveal()">Close Blessings ✨</button>
     </div>
 </div>
 
 <script>
 let currentPage = 1;
 let foundStars = 0;
-const starsFound = [false, false, false, false, false];
+const starsFound = new Array(21).fill(false);
 let gameScore = 0;
 let letterTyped = false;
 let voicePlaying = false;
@@ -857,12 +971,71 @@ let musicPaused = false;
 let letterStarted = false;
 let typingTimeout;
 
+// 21 Prayers and Blessings for Shee
+const starPrayers = [
+    { title: "Divine Protection 🛡️", prayer: "Lord, surround Shee with Your mighty protection. Keep her safe from all harm, danger, and evil. Let Your angels encamp around her wherever she goes." },
+    { title: "God's Favor 🌟", prayer: "Father, grant Shee uncommon favor in every area of her life. Let doors open for her that no man can shut. May she find grace in Your sight and in the sight of men." },
+    { title: "Wisdom & Discernment 📖", prayer: "God, fill Shee with Your wisdom that surpasses understanding. Guide her decisions, illuminate her path, and give her discernment in all things." },
+    { title: "Good Health 💪", prayer: "Jehovah Rapha, touch Shee's body with Your healing power. Let divine health be her portion. May she run and not grow weary, walk and not faint." },
+    { title: "Academic Excellence 🎓", prayer: "Lord of knowledge, bless Shee's studies. Give her retentive memory, understanding, and success in all her academic pursuits. Let her excel beyond expectations." },
+    { title: "Financial Breakthrough 💰", prayer: "Jehovah Jireh, provide for all of Shee's needs according to Your riches in glory. Open doors of financial blessing and teach her to prosper in all she does." },
+    { title: "Emotional Healing 💕", prayer: "Prince of Peace, heal every wound in Shee's heart. Replace anxiety with peace, sadness with joy, and fear with courage. Let her heart be whole." },
+    { title: "Strong Relationships 👥", prayer: "God of community, bless Shee with godly friendships and relationships. Surround her with people who uplift her, challenge her, and love her genuinely." },
+    { title: "Purpose & Destiny 🎯", prayer: "Lord, reveal and establish Shee's purpose. Let her walk confidently in the calling You have placed on her life. May she impact generations." },
+    { title: "Spiritual Growth 🙏", prayer: "Holy Spirit, deepen Shee's walk with God. Let her hunger and thirst for righteousness. Make her a woman after God's own heart." },
+    { title: "Confidence & Self-Worth 👑", prayer: "Father, help Shee see herself as You see her - fearfully and wonderfully made. Let her confidence come from knowing she is Your beloved daughter." },
+    { title: "Love & Marriage 💒", prayer: "God of love, prepare Shee for the beautiful love story You have written. Let her relationship be founded on You. Bless our future together." },
+    { title: "Family Blessings 🏠", prayer: "Lord, bless Shee's family abundantly. Keep them united, healthy, and prosperous. Let Your peace reign in her home always." },
+    { title: "Career Success 💼", prayer: "Jehovah, crown Shee's efforts with success in her career. Let her gifts make room for her and bring her before great men." },
+    { title: "Joy & Laughter 😄", prayer: "God of joy, fill Shee's life with genuine happiness. Let her laughter be contagious and her smile radiant. May joy be her strength always." },
+    { title: "Courage & Boldness 🦁", prayer: "Lord, give Shee the spirit of power, love, and a sound mind. Let her be bold as a lion, facing every challenge with faith, not fear." },
+    { title: "Creativity & Gifts 🎨", prayer: "Creator God, unleash Shee's creative potential. Let her talents flourish and bring glory to Your name. May she create beauty everywhere she goes." },
+    { title: "Peace of Mind 🕊️", prayer: "Prince of Peace, guard Shee's mind with Your perfect peace. When storms come, let her remain steady, anchored in Your promises." },
+    { title: "Long Life 🎂", prayer: "Jehovah, grant Shee long life and fulfillment. May she see her children's children. Let her years be filled with Your goodness and mercy." },
+    { title: "Miracles & Wonders ✨", prayer: "God of miracles, do exceeding abundantly above all Shee asks or thinks. Let her life be a testimony of Your supernatural power." },
+    { title: "Unconditional Love 💖", prayer: "Father, let Shee experience the height, depth, width, and breadth of Your love. May she know she is cherished, valued, and adored - by You and by me." }
+];
+
+// 30 Special Messages for the Photos
+const photoMessages = [
+    "Your smile is my favorite sight in this world 😊",
+    "I fall for you more every single day 💕",
+    "You make ordinary moments extraordinary ✨",
+    "My heart is wherever you are 💖",
+    "You're the answer to prayers I didn't know I prayed 🙏",
+    "Every love song suddenly makes sense when I think of you 🎵",
+    "Your laughter is my favorite melody 🎶",
+    "I see forever in your eyes 👀",
+    "You're my safe place in this crazy world 🏠",
+    "God knew exactly what He was doing when He created you 🌟",
+    "Your strength inspires me daily 💪",
+    "I love how you love God first 🙌",
+    "You're more beautiful than any sunrise 🌅",
+    "My favorite place is anywhere with you 🌍",
+    "You make me want to be a better man 👨",
+    "Your kindness changes everyone around you 💝",
+    "I thank God for you every single day 🙏",
+    "You're my best friend and my greatest love 👫",
+    "Your heart is the most beautiful thing about you 💗",
+    "I choose you today, tomorrow, and always 💍",
+    "You make my soul happy ☺️",
+    "Every moment with you is a treasure 💎",
+    "You're the dream I never want to wake up from 💭",
+    "Your love feels like coming home 🏡",
+    "I see God's goodness when I look at you 🌈",
+    "You're worth every mile, every wait, every prayer 📏",
+    "My future has your name written all over it ✍️",
+    "You are my once-in-a-lifetime love ⏰",
+    "Loving you is the easiest thing I've ever done 💘",
+    "Forever won't be long enough with you ♾️"
+];
+
 // Create stars for all pages
 function createStars(containerId, count = 150) {
     const container = document.getElementById(containerId);
     if(!container) return;
     container.innerHTML = '';
-    
+
     for(let i = 0; i < count; i++) {
         const star = document.createElement('div');
         star.className = 'star';
@@ -890,6 +1063,23 @@ for(let i = 0; i < 25; i++) {
     waveform.appendChild(bar);
 }
 
+// Create prayer popups
+function createPrayerPopups() {
+    const container = document.getElementById('starPrayersContainer');
+    starPrayers.forEach((prayer, idx) => {
+        const popup = document.createElement('div');
+        popup.className = 'star-reason';
+        popup.id = 'reason' + (idx + 1);
+        popup.innerHTML = `
+            <h3>${prayer.title}</h3>
+            <p>${prayer.prayer}</p>
+            <button onclick="closeReason()" style="margin-top: 15px; padding: 10px 25px; background: #ff69b4; border: none; border-radius: 20px; color: white; cursor: pointer; font-size: 0.9rem;">Continue</button>
+        `;
+        container.appendChild(popup);
+    });
+}
+createPrayerPopups();
+
 // Start journey with music
 function startJourney() {
     const music = document.getElementById('bgMusic');
@@ -901,7 +1091,7 @@ function startJourney() {
         console.log('Music play failed:', e);
         alert('Please click again to allow music');
     });
-    
+
     goToPage(2);
 }
 
@@ -910,7 +1100,7 @@ function goToPage(pageNum) {
     document.getElementById('page' + currentPage).classList.remove('active');
     document.getElementById('page' + pageNum).classList.add('active');
     currentPage = pageNum;
-    
+
     if(pageNum === 2) initCosmos();
     if(pageNum === 3) initGallery();
     if(pageNum === 4) initLetter();
@@ -920,17 +1110,18 @@ function goToPage(pageNum) {
 // PAGE 2: COSMOS
 function initCosmos() {
     createStars('page2Stars', 150);
-    
-    const positions = [
-        {top: '15%', left: '10%'},
-        {top: '70%', left: '85%'},
-        {top: '25%', left: '80%'},
-        {top: '80%', left: '15%'},
-        {top: '45%', left: '50%'}
-    ];
-    
+
+    // Generate 21 random positions for stars
+    const positions = [];
+    for(let i = 0; i < 21; i++) {
+        positions.push({
+            top: Math.random() * 70 + 10 + '%',
+            left: Math.random() * 85 + 5 + '%'
+        });
+    }
+
     document.querySelectorAll('.hidden-star').forEach(s => s.remove());
-    
+
     positions.forEach((pos, idx) => {
         const star = document.createElement('div');
         star.className = 'hidden-star';
@@ -940,9 +1131,9 @@ function initCosmos() {
         star.onclick = () => findStar(idx + 1);
         document.getElementById('page2').appendChild(star);
     });
-    
+
     if(countdownInterval) clearInterval(countdownInterval);
-    
+
     updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
 }
@@ -1000,17 +1191,17 @@ function findStar(num) {
     if(starsFound[num-1]) return;
     starsFound[num-1] = true;
     foundStars++;
-    
+
     event.target.classList.add('found');
-    document.getElementById('progress').innerText = `Stars found: ${foundStars}/5`;
+    document.getElementById('progress').innerText = `Stars found: ${foundStars}/21`;
     document.getElementById('reason' + num).classList.add('show');
 }
 
 function closeReason() {
     document.querySelectorAll('.star-reason').forEach(r => r.classList.remove('show'));
-    if(foundStars === 5) {
+    if(foundStars === 21) {
         document.getElementById('unlockBtn').classList.add('visible');
-        document.getElementById('progress').innerHTML = 'All stars found! ✨';
+        document.getElementById('progress').innerHTML = 'All blessings collected! 🙏✨';
         document.getElementById('progress').style.color = '#ffd700';
     }
 }
@@ -1018,28 +1209,41 @@ function closeReason() {
 // PAGE 3: GALLERY
 function initGallery() {
     createStars('page3Stars', 100);
-    
+
     const grid = document.getElementById('galleryGrid');
     grid.innerHTML = '';
-    
+
     const captions = [
         "My favorite smile", "That laugh", "Us being us", "Your eyes", "First date",
         "Random moment", "Your silly side", "When you're happy", "My safe place",
         "Forever us", "Your strength", "That look", "Us growing", "Your heart",
-        "My person", "Best friend", "My home", "Your beauty", "Us against world", "Always"
+        "My person", "Best friend", "My home", "Your beauty", "Us against world", 
+        "Always", "Pure joy", "My everything", "Divine beauty", "Chosen one",
+        "My blessing", "Perfect imperfection", "Soul connection", "Heaven sent", "Eternity"
     ];
-    
-    for(let i = 1; i <= 20; i++) {
+
+    for(let i = 1; i <= 30; i++) {
         const polaroid = document.createElement('div');
         polaroid.className = 'polaroid';
         polaroid.style.setProperty('--rotation', (Math.random() * 10 - 5) + 'deg');
+        polaroid.onclick = function() { flipCard(this); };
+
         polaroid.innerHTML = `
-            <img src="image${i}.jpeg" alt="Memory ${i}" onclick="event.stopPropagation(); openLightbox('image${i}.jpeg')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            <div style="display:none; height:100px; background:linear-gradient(135deg, #ff69b4, #ff1493); color:white; align-items:center; justify-content:center; font-family:Great Vibes; font-size:1.2rem; cursor:pointer;" onclick="event.stopPropagation(); openLightbox('image${i}.jpeg')">${i}</div>
-            <div class="caption">${captions[i-1]}</div>
+            <div class="polaroid-front">
+                <img src="image${i}.jpeg" alt="Memory ${i}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <div style="display:none; height:100px; background:linear-gradient(135deg, #ff69b4, #ff1493); color:white; align-items:center; justify-content:center; font-family:Great Vibes; font-size:1.2rem;">${i}</div>
+                <div class="caption">${captions[i-1]}</div>
+            </div>
+            <div class="polaroid-back">
+                <p>${photoMessages[i-1]}</p>
+            </div>
         `;
         grid.appendChild(polaroid);
     }
+}
+
+function flipCard(card) {
+    card.classList.toggle('flipped');
 }
 
 function openLightbox(src) {
@@ -1051,21 +1255,21 @@ function closeLightbox() {
     document.getElementById('lightbox').classList.remove('active');
 }
 
-// PAGE 4: LETTER - STARTS WHEN VOICE BUTTON IS CLICKED
+// PAGE 4: LETTER
 function initLetter() {
     createStars('page4Stars', 100);
-    
+
     letterStarted = false;
     letterTyped = false;
     document.getElementById('letterText').innerHTML = '<div style="text-align: center; color: #ffb6c1; font-style: italic;">Click the microphone above to begin... 💌</div>';
-    
+
     const oldInstruction = document.getElementById('voiceInstruction');
     const oldPauseBtn = document.getElementById('pauseBtn');
     if(oldInstruction) oldInstruction.remove();
     if(oldPauseBtn) oldPauseBtn.remove();
-    
+
     const voiceSection = document.querySelector('.voice-section');
-    
+
     const instruction = document.createElement('div');
     instruction.id = 'voiceInstruction';
     instruction.style.color = '#ffb6c1';
@@ -1073,7 +1277,7 @@ function initLetter() {
     instruction.style.fontSize = 'clamp(0.8rem, 3.5vw, 1.1rem)';
     instruction.innerText = '👆 Click the microphone to hear my voice and read my letter';
     voiceSection.appendChild(instruction);
-    
+
     const pauseBtn = document.createElement('button');
     pauseBtn.id = 'pauseBtn';
     pauseBtn.className = 'pause-btn';
@@ -1087,10 +1291,10 @@ function startLetterTyping() {
     if(letterStarted) return;
     letterStarted = true;
     letterTyped = true;
-    
+
     document.getElementById('voiceInstruction').style.display = 'none';
     document.getElementById('pauseBtn').style.display = 'inline-block';
-    
+
     const letter = `Hey Shee 💕🌹,
 
 Your best friend Edwin
@@ -1154,11 +1358,11 @@ I love you more than words can measure, more than distance can weaken, more than
 
 Yours,
 Edwin 💙`;
-    
+
     const container = document.getElementById('letterText');
     const letterContainer = document.querySelector('.letter-container');
     let i = 0;
-    
+
     function type() {
         if(i < letter.length) {
             container.innerHTML = letter.substring(0, i+1) + '<span style="display:inline-block;width:2px;height:1.2em;background:#ff69b4;animation:blink 0.8s infinite;vertical-align:middle;"></span>';
@@ -1175,24 +1379,22 @@ Edwin 💙`;
 function toggleVoice() {
     const btn = document.getElementById('voiceBtn');
     const waveform = document.getElementById('waveform');
-    
+
     voicePlaying = !voicePlaying;
     btn.classList.toggle('playing');
     waveform.classList.toggle('active');
-    
+
     if(voicePlaying) {
         startLetterTyping();
-        // const audio = new Audio('voice.mp3');
-        // audio.play();
     }
 }
 
 function toggleMusicPause() {
     const btn = document.getElementById('pauseBtn');
     const music = document.getElementById('bgMusic');
-    
+
     musicPaused = !musicPaused;
-    
+
     if(musicPaused) {
         btn.innerText = '▶️ Play Music';
         btn.classList.add('paused');
@@ -1210,10 +1412,10 @@ function initFinale() {
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    
+
     const fireworks = [];
     const particles = [];
-    
+
     class Firework {
         constructor() {
             this.x = Math.random() * canvas.width;
@@ -1249,54 +1451,54 @@ function initFinale() {
             }
         }
     }
-    
+
     function animate() {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         if(Math.random() < 0.04) fireworks.push(new Firework());
-        
+
         fireworks.forEach((f, i) => {
             f.update();
             f.draw();
             if(f.exploded && f.y < -100) fireworks.splice(i, 1);
         });
-        
+
         particles.forEach((p, i) => {
             p.x += p.vx;
             p.y += p.vy;
             p.vy += 0.1;
             p.life--;
-            
+
             ctx.fillStyle = p.color;
             ctx.globalAlpha = p.life / 80;
             ctx.fillRect(p.x, p.y, 3, 3);
             ctx.globalAlpha = 1;
-            
+
             if(p.life <= 0) particles.splice(i, 1);
         });
-        
+
         requestAnimationFrame(animate);
     }
     animate();
-    
+
     const game = document.getElementById('catchGame');
-    
+
     function spawnStar() {
         if(gameScore >= 21) return;
-        
+
         const star = document.createElement('div');
         star.className = 'falling-star';
         star.innerHTML = '⭐';
         star.style.left = Math.random() * 90 + 5 + '%';
         star.style.top = '-50px';
         star.style.animationDuration = (Math.random() * 2 + 3) + 's';
-        
+
         star.onclick = () => {
             gameScore++;
             document.getElementById('scoreBoard').innerText = `Catch 21 stars: ${gameScore}/21`;
             star.remove();
-            
+
             if(gameScore >= 21) {
                 setTimeout(() => {
                     document.getElementById('proposalReveal').classList.add('show');
@@ -1304,12 +1506,34 @@ function initFinale() {
                 }, 500);
             }
         };
-        
+
         game.appendChild(star);
         setTimeout(() => star.remove(), 5000);
     }
-    
+
     setInterval(spawnStar, 1200);
+}
+
+// Show Prayer Reveal Modal
+function showPrayerReveal() {
+    const container = document.getElementById('prayerContent');
+    container.innerHTML = '';
+
+    starPrayers.forEach((prayer, idx) => {
+        const item = document.createElement('div');
+        item.className = 'prayer-item';
+        item.innerHTML = `
+            <h3>${idx + 1}. ${prayer.title}</h3>
+            <p>${prayer.prayer}</p>
+        `;
+        container.appendChild(item);
+    });
+
+    document.getElementById('prayerReveal').classList.add('show');
+}
+
+function closePrayerReveal() {
+    document.getElementById('prayerReveal').classList.remove('show');
 }
 
 window.addEventListener('resize', () => {
