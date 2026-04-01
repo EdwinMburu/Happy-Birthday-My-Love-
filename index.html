@@ -957,6 +957,13 @@ html, body {
 <audio id="bgMusic" loop>
     <source src="music.mpeg" type="audio/mpeg">
 </audio>
+<audio id="voiceAudio">
+    <source src="voice.mp3" type="audio/mpeg">
+    <source src="voice.aac" type="audio/aac">
+</audio>
+<audio id="bgSoft" loop>
+    <source src="piano.mpeg" type="audio/mpeg">
+</audio>
 
 <!-- Lightbox for enlarged images -->
 <div class="lightbox" id="lightbox">
@@ -984,8 +991,8 @@ html, body {
     <div class="stars-bg" id="page2Stars"></div>
 
     <div class="cosmos-content">
-        <h1>Happy 21st Birthday</h1>
-        <p class="hint-text">Your blessings await in the stars above - catch them all! ✨</p>
+        <h1>Happy 21st Birthday Shee</h1>
+        <p>Yor BestFriend, Win😁</p>
         <div id="countdownContainer">
     <div class="timeBox"><h2 id="months">--</h2><p>Months</p></div>
     <div class="timeBox"><h2 id="weeks">--</h2><p>Weeks</p></div>
@@ -1006,8 +1013,8 @@ html, body {
 <div class="page" id="page3">
     <div class="stars-bg" id="page3Stars"></div>
     <div class="gallery-header">
-        <h1>Our Memories</h1>
-        <p style="color: #ffb6c1;">30 moments, infinite love - Click to reveal my message</p>
+        <h1>Our Memories.Or should i say your...</h1>
+        <p style="color: #ffb6c1;">30 moments, infinite love This is not all..!!</p>
     </div>
 
     <div class="gallery-grid" id="galleryGrid"></div>
@@ -1504,16 +1511,58 @@ Edwin 💙`;
     type();
 }
 
+let fadeInterval;
+
 function toggleVoice() {
     const btn = document.getElementById('voiceBtn');
     const waveform = document.getElementById('waveform');
+    const voice = document.getElementById('voiceAudio');
+    const bgSoft = document.getElementById('bgSoft');
 
     voicePlaying = !voicePlaying;
+
     btn.classList.toggle('playing');
     waveform.classList.toggle('active');
 
-    if(voicePlaying) {
+    if (voicePlaying) {
         startLetterTyping();
+
+        // 🎙️ Voice
+        voice.volume = 1;
+        voice.play();
+
+        // 🎹 Background music (fade in)
+        bgSoft.volume = 0;
+        bgSoft.currentTime = 0;
+        bgSoft.play();
+
+        let vol = 0;
+        clearInterval(fadeInterval);
+        fadeInterval = setInterval(() => {
+         if (vol < 0.06) {
+                vol += 0.02;
+                bgSoft.volume = vol;
+            } else {
+                clearInterval(fadeInterval);
+            }
+        }, 100);
+
+    } else {
+        // 🎙️ Pause voice
+        voice.pause();
+
+        // 🎹 Fade OUT music
+        let vol = bgSoft.volume;
+        clearInterval(fadeInterval);
+        fadeInterval = setInterval(() => {
+            if (vol > 0) {
+                vol -= 0.02;
+                bgSoft.volume = vol;
+            } else {
+                clearInterval(fadeInterval);
+                bgSoft.pause();
+            }
+        }, 100);
     }
 }
 
