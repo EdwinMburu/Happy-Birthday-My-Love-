@@ -6,6 +6,7 @@
 <title>For Shee 💖</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
 * {
     margin: 0;
@@ -22,6 +23,339 @@ html, body {
     width: 100%;
     position: fixed;
     touch-action: manipulation;
+}
+
+/* ===== INTRO OVERLAY + HACKER SEQUENCE ===== */
+.intro-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    background: #000;
+}
+
+.intro-prewait {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: #0f0;
+    font-family: 'VT323', monospace;
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    letter-spacing: 2px;
+}
+
+.intro-prewait p {
+    opacity: 0.85;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.intro-prewait-cursor {
+    width: 20px;
+    height: 42px;
+    background: #0f0;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+    animation: blink 1s infinite;
+}
+
+.hacker-intro {
+    background: #000;
+    color: #0f0;
+    padding: 40px;
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s;
+}
+
+.hacker-intro.glitch-out {
+    animation: glitchOut 2s forwards;
+}
+
+@keyframes glitchOut {
+    0% { filter: none; }
+    20% { filter: hue-rotate(90deg) contrast(1.5); transform: translate(5px, 5px); }
+    40% { filter: hue-rotate(-90deg) contrast(2); transform: translate(-5px, -5px); }
+    60% { filter: hue-rotate(180deg) saturate(2); transform: translate(10px, -10px); }
+    80% { filter: invert(1); transform: translate(-10px, 10px); }
+    100% { opacity: 0; filter: blur(10px); }
+}
+
+.hacker-intro::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        linear-gradient(rgba(0, 255, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+}
+
+.terminal {
+    border: 2px solid #0f0;
+    border-radius: 10px;
+    padding: 30px;
+    max-width: 800px;
+    width: 90%;
+    background: rgba(0, 20, 0, 0.9);
+    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3), inset 0 0 30px rgba(0, 255, 0, 0.1);
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s;
+    max-height: 86vh;
+    overflow-y: auto;
+}
+
+.terminal.glitching {
+    animation: terminalGlitch 0.3s infinite;
+}
+
+@keyframes terminalGlitch {
+    0% { transform: translate(0); }
+    25% { transform: translate(2px, 2px); }
+    50% { transform: translate(-2px, -2px); }
+    75% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+.terminal-header {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #0f0;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0f0;
+    opacity: 0.6;
+}
+
+.typing-line {
+    font-size: 24px;
+    line-height: 1.6;
+    margin: 10px 0;
+    min-height: 30px;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    height: 20px;
+    background: #0f0;
+    animation: blink 1s infinite;
+    margin-left: 5px;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.scanline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: rgba(0, 255, 0, 0.3);
+    animation: scan 4s linear infinite;
+    pointer-events: none;
+    z-index: 5;
+}
+
+@keyframes scan {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+.start-btn {
+    background: #0f0;
+    color: #000;
+    border: 2px solid #0f0;
+    font-family: 'VT323', monospace;
+    font-size: 28px;
+    padding: 15px 40px;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 20px;
+    animation: pulse 2s infinite;
+}
+
+.start-btn:hover {
+    background: #000;
+    color: #0f0;
+}
+
+.password-section {
+    margin-top: 30px;
+    text-align: center;
+    display: none;
+}
+
+.password-prompt {
+    font-size: 20px;
+    color: #ff0;
+    margin-bottom: 15px;
+}
+
+.password-input {
+    background: #000;
+    border: 2px solid #0f0;
+    color: #0f0;
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    padding: 10px 20px;
+    width: 200px;
+    text-align: center;
+    outline: none;
+}
+
+.password-input:focus {
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.submit-btn {
+    background: #0f0;
+    color: #000;
+    border: none;
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    padding: 10px 25px;
+    margin-left: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.submit-btn:hover {
+    background: #0ff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+.encrypted-container {
+    margin-top: 30px;
+    padding: 20px;
+    display: none;
+}
+
+.encrypted-text {
+    font-size: 32px;
+    text-align: center;
+    color: #f0f;
+    letter-spacing: 3px;
+    min-height: 40px;
+}
+
+.access-granted {
+    font-size: 48px;
+    text-align: center;
+    margin: 30px 0;
+    color: #0f0;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    display: none;
+    text-shadow: 0 0 20px #0f0;
+}
+
+.final-message {
+    font-size: 28px;
+    text-align: center;
+    color: #0ff;
+    margin-top: 20px;
+    line-height: 1.6;
+    min-height: 150px;
+    white-space: pre-line;
+}
+
+.error-msg {
+    color: #f00;
+    font-size: 18px;
+    margin-top: 10px;
+    display: none;
+}
+
+.terminated-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.terminated-text {
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    color: #f00;
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    text-shadow: 0 0 30px #f00;
+    animation: glitchText 0.3s infinite;
+    text-align: center;
+    padding: 0 15px;
+}
+
+@keyframes glitchText {
+    0% { transform: translate(0); text-shadow: 2px 0 #f00, -2px 0 #0f0; }
+    25% { transform: translate(5px, 5px); text-shadow: -2px 0 #f00, 2px 0 #0f0; }
+    50% { transform: translate(-5px, -5px); text-shadow: 2px 0 #0f0, -2px 0 #f00; }
+    75% { transform: translate(5px, -5px); text-shadow: -2px 0 #0f0, 2px 0 #f00; }
+    100% { transform: translate(0); text-shadow: 2px 0 #f00, -2px 0 #0f0; }
+}
+
+.blinking-cursor {
+    width: 20px;
+    height: 40px;
+    background: #0f0;
+    animation: blink 1s infinite;
+    margin-top: 50px;
+}
+
+.exit-text {
+    color: #0f0;
+    font-size: 20px;
+    margin-top: 30px;
+    opacity: 0.7;
+    animation: fadeInOut 2s infinite;
+    text-align: center;
+    padding: 0 20px;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+.sound-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: #0f0;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 5100;
+    border: 1px solid #0f0;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    font-family: 'VT323', monospace;
 }
 
 /* Lightbox for images */
@@ -953,6 +1287,55 @@ html, body {
 </head>
 <body>
 
+<div class="intro-overlay" id="introOverlay">
+    <div class="intro-prewait" id="introPrewait">
+        <div class="intro-prewait-cursor"></div>
+        <p>Linking to birthday protocol...</p>
+    </div>
+
+    <div class="hacker-intro" id="mainContainer">
+        <div class="scanline"></div>
+        <div class="terminal" id="terminal">
+            <div class="terminal-header">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <div id="terminalContent">
+                <div class="typing-line" id="line1"></div>
+                <div class="typing-line" id="line2"></div>
+                <div class="typing-line" id="line3"></div>
+                <div class="typing-line" id="line4"></div>
+                <div class="typing-line" id="line5"></div>
+            </div>
+
+            <button class="start-btn" id="startBtn" onclick="startSystem()">INITIALIZE SYSTEM</button>
+
+            <div class="password-section" id="passwordSection">
+                <div class="password-prompt">⚠ ENCRYPTED FILE DETECTED // PASSWORD REQUIRED</div>
+                <input type="password" class="password-input" id="passwordInput" placeholder="ENTER CODE" maxlength="4">
+                <button class="submit-btn" onclick="checkPassword()">DECRYPT</button>
+                <div class="error-msg" id="errorMsg">❌ ACCESS DENIED - INVALID PASSWORD</div>
+            </div>
+
+            <div class="encrypted-container" id="encryptedContainer">
+                <div class="encrypted-text" id="scrambleText"></div>
+                <div class="access-granted" id="accessGranted">ACCESS GRANTED</div>
+                <div class="final-message" id="finalMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="terminated-section" id="terminatedSection">
+        <div class="terminated-text" id="terminatedText"></div>
+        <div class="blinking-cursor" id="finalCursor"></div>
+        <div class="exit-text" id="exitText">Press anywhere on the screen to continue...</div>
+    </div>
+
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">🔊 Sound: ON</div>
+</div>
+
 <!-- AUDIO - MPEG FORMAT -->
 <audio id="bgMusic" loop>
     <source src="music.mpeg" type="audio/mpeg">
@@ -1086,6 +1469,327 @@ let countdownInterval = null;
 let musicPaused = false;
 let letterStarted = false;
 let typingTimeout;
+
+let audioCtx;
+let soundEnabled = true;
+let currentLine = 0;
+let introCanContinue = false;
+let keyNoiseBuffer;
+
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const noiseLength = Math.floor(audioCtx.sampleRate * 0.06);
+        keyNoiseBuffer = audioCtx.createBuffer(1, noiseLength, audioCtx.sampleRate);
+        const channel = keyNoiseBuffer.getChannelData(0);
+        for (let i = 0; i < noiseLength; i++) {
+            channel[i] = (Math.random() * 2 - 1) * Math.exp(-i / (noiseLength * 0.35));
+        }
+    }
+}
+
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    document.getElementById('soundToggle').innerText = soundEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+}
+
+function playKeySound() {
+    if (!audioCtx || !soundEnabled) return;
+
+    const now = audioCtx.currentTime;
+    const clickGain = audioCtx.createGain();
+    clickGain.gain.setValueAtTime(0.001, now);
+    clickGain.gain.exponentialRampToValueAtTime(0.16, now + 0.002);
+    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
+
+    const osc = audioCtx.createOscillator();
+    osc.type = 'triangle';
+    const pitch = 1800 + Math.random() * 500;
+    osc.frequency.setValueAtTime(pitch, now);
+    osc.frequency.exponentialRampToValueAtTime(700 + Math.random() * 180, now + 0.05);
+
+    const toneFilter = audioCtx.createBiquadFilter();
+    toneFilter.type = 'bandpass';
+    toneFilter.frequency.setValueAtTime(2400, now);
+    toneFilter.Q.value = 1.2;
+
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = keyNoiseBuffer;
+
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.setValueAtTime(1800, now);
+
+    osc.connect(toneFilter);
+    toneFilter.connect(clickGain);
+    noise.connect(noiseFilter);
+    noiseFilter.connect(clickGain);
+    clickGain.connect(audioCtx.destination);
+
+    osc.start(now);
+    noise.start(now);
+    osc.stop(now + 0.055);
+    noise.stop(now + 0.04);
+}
+
+function keepTypingInView() {
+    const terminal = document.getElementById('terminal');
+    if (terminal) {
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+}
+
+function typeText(element, text, speed, callback) {
+    let i = 0;
+    element.innerHTML = '';
+
+    function type() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            playKeySound();
+            keepTypingInView();
+            i++;
+            setTimeout(type, speed);
+        } else {
+            element.innerHTML += '<span class="cursor"></span>';
+            keepTypingInView();
+            if (callback) callback();
+        }
+    }
+
+    type();
+}
+
+const bootLines = [
+    '[00:00:01.021] const target = "SHEE"; // birthday payload',
+    '[00:00:02.884] import { decryptHeart } from "./love.protocol";',
+    '[00:00:04.114] if (scan("memories").match(target)) auth.level = "trusted";',
+    '[00:00:05.992] runtime.verifyAge(target, 21) === true; // passed',
+    '[00:00:07.530] execute("/usr/bin/celebrate --mode=forever");'
+];
+
+function bootSequence() {
+    if (currentLine < bootLines.length) {
+        const lineElement = document.getElementById('line' + (currentLine + 1));
+        typeText(lineElement, bootLines[currentLine], 100, function() {
+            setTimeout(() => {
+                lineElement.innerHTML = lineElement.innerHTML.replace('<span class="cursor"></span>', '');
+                currentLine++;
+                setTimeout(bootSequence, 300);
+            }, 400);
+        });
+    } else {
+        setTimeout(() => {
+            document.getElementById('passwordSection').style.display = 'block';
+            document.getElementById('passwordInput').focus();
+        }, 500);
+    }
+}
+
+function startSystem() {
+    initAudio();
+    document.getElementById('startBtn').style.display = 'none';
+    bootSequence();
+}
+
+const passwordInput = document.getElementById('passwordInput');
+passwordInput.addEventListener('input', playKeySound);
+passwordInput.addEventListener('keydown', playKeySound);
+
+function checkPassword() {
+    playKeySound();
+    const input = passwordInput.value;
+    const errorMsg = document.getElementById('errorMsg');
+    const container = document.getElementById('encryptedContainer');
+
+    if (input === '1035') {
+        errorMsg.style.display = 'none';
+        container.style.display = 'block';
+        document.getElementById('passwordSection').style.display = 'none';
+        startDecryption();
+    } else {
+        errorMsg.style.display = 'block';
+        passwordInput.value = '';
+        passwordInput.focus();
+    }
+}
+
+passwordInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        checkPassword();
+    }
+});
+
+function startDecryption() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!';
+    const finalText = 'HAPPY BIRTHDAY JOWIN';
+    const scrambleElement = document.getElementById('scrambleText');
+
+    let iterations = 0;
+
+    const interval = setInterval(() => {
+        scrambleElement.innerText = finalText
+            .split('')
+            .map((char, index) => {
+                if (index < iterations) {
+                    return finalText[index];
+                }
+                return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join('');
+
+        playKeySound();
+        keepTypingInView();
+
+        if (iterations >= finalText.length * 2) {
+            clearInterval(interval);
+            scrambleElement.innerText = finalText;
+            scrambleElement.style.color = '#0f0';
+            scrambleElement.style.textShadow = '0 0 20px #0f0';
+
+            setTimeout(showAccessGranted, 800);
+        }
+
+        iterations++;
+    }, 100);
+}
+
+function showAccessGranted() {
+    const accessElement = document.getElementById('accessGranted');
+    accessElement.style.display = 'block';
+
+    const text = 'ACCESS GRANTED';
+    let i = 0;
+    accessElement.innerText = '';
+
+    function typeAccess() {
+        if (i < text.length) {
+            accessElement.innerText += text.charAt(i);
+            playKeySound();
+            keepTypingInView();
+            i++;
+            setTimeout(typeAccess, 100);
+        } else {
+            accessElement.style.textShadow = '2px 0 #0f0, -2px 0 #f0f';
+            setTimeout(showFinalMessage, 1000);
+        }
+    }
+
+    typeAccess();
+}
+
+function showFinalMessage() {
+    const finalElement = document.getElementById('finalMessage');
+    const messages = [
+        'Happy Birthday Shee......',
+        'Happy 21...........',
+        'I Love you........',
+        'May You blow a Thousand more....💖💝💝'
+    ];
+
+    let msgIndex = 0;
+
+    function typeNextMessage() {
+        if (msgIndex < messages.length) {
+            const newText = messages[msgIndex];
+            let charIndex = 0;
+
+            if (msgIndex > 0) {
+                finalElement.innerText += '\n';
+            }
+
+            function typeChar() {
+                if (charIndex < newText.length) {
+                    finalElement.innerText += newText.charAt(charIndex);
+                    playKeySound();
+                    keepTypingInView();
+                    charIndex++;
+                    setTimeout(typeChar, 100);
+                } else {
+                    msgIndex++;
+                    if (msgIndex < messages.length) {
+                        setTimeout(typeNextMessage, 400);
+                    } else {
+                        setTimeout(startTermination, 2000);
+                    }
+                }
+            }
+
+            typeChar();
+        }
+    }
+
+    typeNextMessage();
+}
+
+function startTermination() {
+    const terminal = document.getElementById('terminal');
+    const mainContainer = document.getElementById('mainContainer');
+    const terminatedSection = document.getElementById('terminatedSection');
+    const terminatedText = document.getElementById('terminatedText');
+
+    terminal.classList.add('glitching');
+
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => playKeySound(), i * 100);
+    }
+
+    setTimeout(() => {
+        mainContainer.classList.add('glitch-out');
+
+        setTimeout(() => {
+            mainContainer.style.display = 'none';
+            terminatedSection.style.display = 'flex';
+
+            const text = 'CONNECTION TERMINATED';
+            let i = 0;
+            terminatedText.innerText = '';
+
+            function typeTerminated() {
+                if (i < text.length) {
+                    terminatedText.innerText += text.charAt(i);
+                    playKeySound();
+                    i++;
+                    setTimeout(typeTerminated, 100);
+                } else {
+                    setTimeout(() => {
+                        introCanContinue = true;
+                    }, 900);
+                }
+            }
+
+            typeTerminated();
+        }, 1500);
+    }, 1000);
+}
+
+function continueToBirthday() {
+    if (!introCanContinue) return;
+
+    const overlay = document.getElementById('introOverlay');
+    overlay.style.transition = 'opacity 0.7s ease';
+    overlay.style.opacity = '0';
+
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 720);
+}
+
+document.addEventListener('click', continueToBirthday);
+document.addEventListener('keydown', continueToBirthday);
+
+function beginHackerIntro() {
+    const prewait = document.getElementById('introPrewait');
+    const mainContainer = document.getElementById('mainContainer');
+
+    setTimeout(() => {
+        prewait.style.display = 'none';
+        mainContainer.style.display = 'flex';
+    }, 15000);
+}
+
+beginHackerIntro();
 
 // Update navigation arrows on load
 updateNavArrows();
@@ -1424,6 +2128,7 @@ function startLetterTyping() {
     if(letterStarted) return;
     letterStarted = true;
     letterTyped = true;
+    initAudio();
 
     document.getElementById('voiceInstruction').style.display = 'none';
     document.getElementById('pauseBtn').style.display = 'inline-block';
@@ -1499,8 +2204,11 @@ Edwin 💙`;
     function type() {
         if(i < letter.length) {
             container.innerHTML = letter.substring(0, i+1) + '<span style="display:inline-block;width:2px;height:1.2em;background:#ff69b4;animation:blink 0.8s infinite;vertical-align:middle;"></span>';
+            playKeySound();
             i++;
-            letterContainer.scrollTop = letterContainer.scrollHeight;
+            requestAnimationFrame(() => {
+                letterContainer.scrollTop = letterContainer.scrollHeight;
+            });
             typingTimeout = setTimeout(type, 65);
         } else {
             container.innerHTML = letter;
