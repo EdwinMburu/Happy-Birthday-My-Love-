@@ -3031,7 +3031,7 @@ function toggleVoice() {
         let vol = 0;
         clearInterval(fadeInterval);
         fadeInterval = setInterval(() => {
-         if (vol < 0.06) {
+         if (vol < 0.18) {
                 vol += 0.02;
                 bgSoft.volume = vol;
             } else {
