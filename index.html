@@ -1334,6 +1334,75 @@ html, body {
     overflow: hidden;
 }
 
+.blue-love-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 130;
+    opacity: 0;
+    transition: opacity 200ms ease;
+}
+
+.blue-love-overlay.show {
+    opacity: 1;
+}
+
+.blue-love-flash {
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(circle at center, rgba(88, 168, 255, 0.35) 0%, rgba(88, 168, 255, 0.14) 18%, transparent 60%);
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(8px);
+}
+
+.blue-love-modal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(980px, 94vw);
+    height: min(680px, 86vh);
+    background: linear-gradient(180deg, rgba(6,14,30,0.98), rgba(8,18,36,0.95));
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 6px 18px rgba(50,130,220,0.08);
+    overflow: hidden;
+    pointer-events: auto;
+    display: grid;
+    grid-template-rows: 36px 1fr;
+}
+
+.blue-love-close {
+    border: none;
+    background: transparent;
+    color: #cfeeff;
+    font-size: 18px;
+    padding: 6px 12px;
+    justify-self: end;
+    cursor: pointer;
+}
+
+.blue-love-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.proposal-blue-heart {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    pointer-events: none;
+    font-size: clamp(1.1rem, 2.8vw, 2.2rem);
+    line-height: 1;
+    transform: translate(-50%, -50%) scale(0.7);
+    filter: drop-shadow(0 0 12px rgba(88, 168, 255, 0.7));
+    will-change: transform, opacity;
+    z-index: 2;
+}
+
 .proposal-reveal .ring {
     position: relative;
     font-size: clamp(3rem, 10vw, 4.6rem);
@@ -1868,6 +1937,7 @@ html, body {
 <div class="page" id="page5">
     <canvas id="fireworksCanvas"></canvas>
     <div class="star-fireworks-overlay" id="starFireworksOverlay"></div>
+    <div class="blue-love-overlay" id="blueLoveOverlay" aria-hidden="true"></div>
     <div class="catch-game" id="catchGame"></div>
     <div class="score-board" id="scoreBoard">Catch 21 stars: 0/21</div>
 
@@ -2446,7 +2516,7 @@ const photoMessages = [
     "You're worth every mile, every wait, every prayer 📏",
     "My future has your name written all over it ✍️",
     "You are my once-in-a-lifetime love ⏰",
-    "Loving you is the easiest thing I've ever done 💘",
+    "Loving you is the best thing that ever happened to me 💘",
     "Forever won't be long enough with you ♾️"
 ];
 
@@ -2829,7 +2899,6 @@ function initLetter() {
     instruction.style.color = '#ffb6c1';
     instruction.style.marginTop = '10px';
     instruction.style.fontSize = 'clamp(0.8rem, 3.5vw, 1.1rem)';
-    instruction.innerText = '👆 Click the microphone to hear my voice and read my letter';
     voiceSection.appendChild(instruction);
 
     const pauseBtn = document.createElement('button');
@@ -2851,7 +2920,7 @@ function startLetterTyping() {
     document.getElementById('pauseBtn').style.display = 'inline-block';
     const letter = `Hey Shee 💕🌹,
 
-Your best friend Edwin
+Your best friend Edwin.
 Happy 21st Birthday 🎂✨🎉
 
 Today the world celebrates 21 years of you… but for me, it celebrates the greatest gift my life has ever received. 💝🌍
@@ -2911,7 +2980,7 @@ May this year be filled with deep joy, exciting adventures, soft moments, big wi
 I love you more than words can measure, more than distance can weaken, more than time can change. Always. Completely. Forever. 💞♾️
 
 Yours,
-Edwin 💙`;
+Edwin 🤍🤍`;
 
     const container = document.getElementById('letterText');
     const letterContainer = document.querySelector('.letter-container');
@@ -3122,10 +3191,109 @@ function initFinale() {
             }
         }
 
+        function makeBlueLoveHeart(x, y) {
+            if (!ringStage) return;
+
+            const heart = document.createElement('span');
+            heart.className = 'proposal-blue-heart';
+            heart.textContent = '💙';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+            heart.style.opacity = '1';
+            ringStage.appendChild(heart);
+
+            const dx = (Math.random() - 0.5) * 240;
+            const dy = -70 - Math.random() * 180;
+            const scale = 0.7 + Math.random() * 1.05;
+
+            heart.animate([
+                { transform: 'translate(-50%, -50%) scale(0.6)', opacity: 1 },
+                { transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0 }
+            ], {
+                duration: 1100 + Math.random() * 500,
+                easing: 'cubic-bezier(.22,.7,.26,1)'
+            });
+
+            setTimeout(() => heart.remove(), 1700);
+        }
+
+        function blueLoveBurst() {
+            if (!ringStage) return;
+            const rect = ringStage.getBoundingClientRect();
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+
+            for (let i = 0; i < 34; i++) {
+                setTimeout(() => makeBlueLoveHeart(cx, cy), i * 18);
+            }
+        }
+
+        function launchBlueLoveSequence() {
+            if (!blueLoveOverlay) return;
+
+            blueLoveOverlay.classList.add('show');
+
+            const flash = document.createElement('div');
+            flash.className = 'blue-love-flash';
+            blueLoveOverlay.appendChild(flash);
+
+            flash.animate([
+                { opacity: 0, transform: 'scale(0.82)' },
+                { opacity: 1, transform: 'scale(1.02)' },
+                { opacity: 0, transform: 'scale(1.12)' }
+            ], {
+                duration: 1200,
+                easing: 'ease-out'
+            });
+
+            const rect = blueLoveOverlay.getBoundingClientRect();
+            const cx = rect.width / 2;
+            const cy = rect.height / 2;
+
+            for (let i = 0; i < 54; i++) {
+                setTimeout(() => {
+                    makeBlueLoveHeart(
+                        cx + (Math.random() - 0.5) * 220,
+                        cy + (Math.random() - 0.5) * 140
+                    );
+                }, i * 26);
+            }
+
+            setTimeout(() => {
+                flash.remove();
+                blueLoveOverlay.classList.remove('show');
+            }, 2400);
+        }
+
         if (yesBtn && result) {
             yesBtn.addEventListener('click', () => {
-                result.textContent = 'Thank you, my love. I will ask you properly the moment I see you.';
-                proposalSparkBurst();
+                // Open the Blue Love animation as a modal overlay (iframe)
+                if (!blueLoveOverlay) return;
+
+                // Build modal content
+                blueLoveOverlay.innerHTML = `
+                    <div class="blue-love-modal" role="dialog" aria-modal="true">
+                        <div style="display:flex; align-items:center; padding:6px 10px; background:linear-gradient(90deg, rgba(6,14,30,0.06), transparent);">
+                            <button class="blue-love-close" aria-label="Close">✕</button>
+                        </div>
+                        <iframe class="blue-love-iframe" src="blue-love.html"></iframe>
+                    </div>
+                `;
+
+                blueLoveOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+
+                const closeBtn = blueLoveOverlay.querySelector('.blue-love-close');
+                function closeBlueLove() {
+                    blueLoveOverlay.classList.remove('show');
+                    // allow the iframe to be GC'd
+                    blueLoveOverlay.innerHTML = '';
+                    document.body.style.overflow = '';
+                    yesBtn.disabled = true;
+                    yesBtn.textContent = 'Forever, yes 💙';
+                }
+
+                closeBtn.addEventListener('click', closeBlueLove);
             });
             proposalRevealBound = true;
         }
